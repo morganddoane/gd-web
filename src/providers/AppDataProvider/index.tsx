@@ -93,18 +93,13 @@ const AppDataProvider = (props: { children: ReactElement }): ReactElement => {
     };
 
     const logoutUser = React.useCallback(() => {
-        if (history) {
-            localStorage.removeItem('user');
-            localStorage.removeItem('token');
-            history.push('/');
-        }
-    }, [history]);
+        localStorage.clear();
+    }, []);
 
     React.useEffect(() => {
         const user = JSON.stringify(localStorage.getItem('user'));
         const token = localStorage.getItem('token');
         if (user && token) setUser(localStorage.user);
-        else logoutUser();
     }, [logoutUser]);
 
     return (

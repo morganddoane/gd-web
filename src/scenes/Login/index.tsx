@@ -99,6 +99,19 @@ export const Login = (): ReactElement => {
         },
     });
 
+    // const fieldChange = (
+    //     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    //     field: 'method' | 'password'
+    // ): void => {
+    //     if (e.target.ke === 'Enter') {
+    //         console.log('Enter key pressed');
+    //     }
+    //     setFormState({
+    //         ...formState,
+    //         method: e.target.value,
+    //     });
+    // };
+
     return (
         <div className={classes.root}>
             <Grow
@@ -145,7 +158,10 @@ export const Login = (): ReactElement => {
                                             password: e.target.value,
                                         });
                                     }}
-                                ></TextField>
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') attemptLogin();
+                                    }}
+                                />
                                 <Button
                                     className={classes.cardButton}
                                     color="primary"
