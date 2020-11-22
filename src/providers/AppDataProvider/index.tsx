@@ -12,6 +12,7 @@ import {
     ISnackbar,
 } from './types';
 import useCookies from 'react-cookie/es6/useCookies';
+import { useHistory } from 'react-router';
 
 const reducer = (state: IAppState, action: IAction): IAppState => {
     switch (action.type) {
@@ -74,13 +75,8 @@ export const AppDataContext = React.createContext<IContextState>({
 
 const AppDataProvider = (props: { children: ReactElement }): ReactElement => {
     const { children } = props;
-    const [cookies, setCookie, removeCookie] = useCookies(['user']);
     const [state, dispatch] = React.useReducer(reducer, initState);
-
-    const logoutUser = (): void => {
-        removeCookie('token');
-        window.location.reload();
-    };
+    const history = useHistory();
 
     const setUser = (data: UserContext): void => {
         dispatch({
@@ -96,11 +92,20 @@ const AppDataProvider = (props: { children: ReactElement }): ReactElement => {
         });
     };
 
-    const user = cookies.user as UserContext;
+    const logoutUser = React.useCallback(() => {
+        if (history) {
+            localStorage.removeItem('user');
+            localStorage.removeItem('token');
+            history.push('/');
+        }
+    }, [history]);
 
     React.useEffect(() => {
-        if (user) setUser(user);
-    }, [user]);
+        const user = JSON.stringify(localStorage.getItem('user'));
+        const token = localStorage.getItem('token');
+        if (user && token) setUser(localStorage.user);
+        else logoutUser();
+    }, [logoutUser]);
 
     return (
         <AppDataContext.Provider

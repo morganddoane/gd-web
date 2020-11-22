@@ -1,56 +1,51 @@
-import { ReactElement } from 'react';
-import { IconType } from 'react-icons';
-import { MdEvent } from 'react-icons/md';
+import React, { ReactElement } from 'react';
+import { IconType, IconBaseProps } from 'react-icons';
+import { MdEvent, MdLocalShipping } from 'react-icons/md';
 import { Events } from 'scenes/Events';
+import { Shipments } from 'scenes/Shipments';
 
 export enum RouteKey {
-    Events,
-    EventDetail,
+    Events = 'Events',
+    EventDetail = 'EventDetail',
+    Shipments = 'Shipments',
+    ShipmentDetail = 'ShipmentDetail',
 }
 
 export interface IRouteProps {
+    displayName: string;
     path: string;
     component: () => ReactElement;
-    icon?: IconType;
+    icon?: IconBaseProps;
     exact?: boolean;
+    parentKey?: RouteKey;
     subRoutes?: KeyedRoute[];
 }
 
-type KeyedRoute = Record<RouteKey, IRouteProps>;
+export type KeyedRoute = Record<RouteKey, IRouteProps>;
 
 export const privateRoutes: KeyedRoute[] = [
     {
         [RouteKey.Events]: {
+            displayName: 'Events',
             path: '/events',
-            icon: MdEvent,
+            icon: <MdEvent />,
             component: Events,
         },
         [RouteKey.EventDetail]: {
-            path: '/events/:hbsjhbsdc',
-            icon: MdEvent,
+            displayName: 'Event Detail',
+            path: '/events/:id',
+            component: Events,
+        },
+        [RouteKey.Shipments]: {
+            displayName: 'Shipping',
+            path: '/shipping',
+            icon: <MdLocalShipping />,
+            component: Shipments,
+        },
+        [RouteKey.ShipmentDetail]: {
+            displayName: 'Shipment Detail',
+            path: '/shipping/:id',
             component: Events,
         },
     },
 ];
-
-// const flattenRoutes = (): IRouteProps[] => {
-//     const flat: IRouteProps[] = [];
-
-//     const flattenRoute = (route: IRouteProps): void => {
-//         const copy = { ...route };
-
-//         if (copy.subRoutes) {
-//             for (const s of copy.subRoutes) {
-//                 flattenRoute(s);
-//             }
-//         }
-//         delete copy.subRoutes;
-//         flat.push(copy);
-//     };
-
-//     for (const r of priateRoutes) {
-//         flattenRoute(r);
-//     }
-
-//     return flat;
-// };

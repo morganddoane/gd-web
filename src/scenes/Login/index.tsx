@@ -1,5 +1,12 @@
 import React, { ReactElement } from 'react';
-import { Button, Fade, Grow, makeStyles, TextField } from '@material-ui/core';
+import {
+    Button,
+    Fade,
+    Grow,
+    LinearProgress,
+    makeStyles,
+    TextField,
+} from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import { useMutation } from '@apollo/client';
 import {
@@ -20,11 +27,11 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'center',
         background: theme.palette.background.default,
     },
+    cardWrap: { padding: 32 },
     card: {
         width: 420,
         background: theme.palette.background.paper,
         boxShadow: theme.shadows[3],
-        padding: 32,
         borderRadius: 4,
         textAlign: 'center',
     },
@@ -74,10 +81,8 @@ export const Login = (): ReactElement => {
             password: formState.password,
         },
         onCompleted: (data: IQLogin_Response) => {
-            setCookie('user', data.loginUser.user, {
-                expires: new Date(data.loginUser.expiration * 1000),
-            });
-            setCookie('token', data.loginUser.token, { httpOnly: true });
+            localStorage.setItem('user', JSON.stringify(data.loginUser.user));
+            localStorage.setItem('token', data.loginUser.token);
             history.push('/', {
                 state: {
                     from: '/login',
@@ -102,6 +107,7 @@ export const Login = (): ReactElement => {
                 onEntered={() => setFormState({ ...formState, open: true })}
             >
                 <div className={classes.card}>
+                    {loading ? <LinearProgress /> : ''}
                     <div className={classes.cardWrap}>
                         <Typography variant="h3">Welcome</Typography>
                         <Typography
@@ -147,6 +153,7 @@ export const Login = (): ReactElement => {
                                     size="large"
                                     fullWidth
                                     onClick={() => attemptLogin()}
+                                    disabled={loading}
                                 >
                                     {"Let's go!"}
                                 </Button>

@@ -9,13 +9,15 @@ interface IPrivateRouteProps extends RouteProps {
 
 export const PrivateRoute = (props: IPrivateRouteProps): ReactElement => {
     const { children, ...rest } = props;
-    const [cookies, setCookie, removeCookie] = useCookies(['user']);
+
+    const user = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
 
     return (
         <Route
             {...rest}
             render={({ location }) =>
-                cookies.user ? (
+                token && user ? (
                     children
                 ) : (
                     <Redirect

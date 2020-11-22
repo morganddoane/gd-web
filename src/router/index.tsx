@@ -1,28 +1,41 @@
 import React, { ReactElement } from 'react';
-import { BrowserRouter, Switch } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { Login } from 'scenes/Login';
+import { Logout } from 'scenes/Logout';
 import { PrivateRoute } from './components/PrivateRoute';
 import { PublicOnlyRoute } from './components/PublicOnlyRoute';
 import { privateRoutes } from './privateRoutes';
 
 export const AppRouter = (): ReactElement => {
-    const renderPrivateRoutes = (): ReactElement[] =>
+    const renderPrivateRoutes = (): ReactElement[] => {
+        const componentArray: ReactElement[] = [];
         privateRoutes.map((r) => {
-            const key = Object.keys(r)[0];
-            const props = Object.values(r)[0];
+            for (const [key, value] of Object.entries(r)) {
+                const ChildComponent = value.component;
 
-            const ChildComponent = props.component;
-
-            return (
-                <PrivateRoute key={key} path={props.path} exact={props.exact}>
-                    <ChildComponent />
-                </PrivateRoute>
-            );
+                componentArray.push(
+                    <PrivateRoute
+                        key={key}
+                        path={value.path}
+                        exact={value.exact}
+                    >
+                        <ChildComponent />
+                    </PrivateRoute>
+                );
+            }
         });
+        return componentArray;
+    };
 
     return (
         <BrowserRouter>
             <Switch>
+                <Route path="/" exact>
+                    <Redirect to="/events" />
+                </Route>
+                <PrivateRoute path="/logout" exact>
+                    <Logout />
+                </PrivateRoute>
                 {renderPrivateRoutes()}
                 <PublicOnlyRoute path="/login" exact>
                     <Login />
