@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { IconType, IconBaseProps } from 'react-icons';
+import { IconBaseProps } from 'react-icons';
 import { MdEvent, MdLocalShipping } from 'react-icons/md';
 import { Events } from 'scenes/Events';
 import { Shipments } from 'scenes/Shipments';
@@ -30,22 +30,26 @@ export const privateRoutes: KeyedRoute[] = [
             path: '/events',
             icon: <MdEvent />,
             component: Events,
+            exact: true,
         },
         [RouteKey.EventDetail]: {
             displayName: 'Event Detail',
             path: '/events/:id',
             component: Events,
+            exact: true,
         },
         [RouteKey.Shipments]: {
             displayName: 'Shipping',
             path: '/shipping',
             icon: <MdLocalShipping />,
             component: Shipments,
+            exact: true,
         },
         [RouteKey.ShipmentDetail]: {
             displayName: 'Shipment Detail',
             path: '/shipping/:id',
-            component: Events,
+            component: Shipments,
+            exact: true,
         },
     },
 ];

@@ -1,11 +1,25 @@
-import { Fade, Grid, Grow, makeStyles } from '@material-ui/core';
+import { Fade, Grid, makeStyles } from '@material-ui/core';
 import { IEvents_Event } from 'GraphQL/scenes/Events/queries';
 import React, { ReactElement } from 'react';
-
 import { format } from 'date-fns';
+import { PageNavs } from 'components/AppNav/components/PageNavs';
+import { EventFilter, EventView } from 'scenes/Events';
+import { PageTitle } from 'components/AppNav/components/PageTitle/iindex';
 
 const useStyles = makeStyles((theme) => ({
-    root: {},
+    root: {
+        height: '100%',
+        display: 'flex',
+        flexFlow: 'column',
+    },
+    header: {
+        padding: `24px 24px 0px 24px`,
+    },
+    body: {
+        flex: 1,
+        padding: 24,
+        overflow: 'auto',
+    },
     eventRow: {
         padding: 10,
         borderBottom: `1px solid ${theme.palette.divider}`,
@@ -42,12 +56,18 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export const EventList = (props: { events: IEvents_Event[] }): ReactElement => {
+export const EventList = (props: {
+    events: IEvents_Event[];
+    filter: EventFilter;
+    click: (event: IEvents_Event) => void;
+    changeFilter: (filter: EventFilter) => void;
+}): ReactElement => {
     const classes = useStyles();
+    const { events, filter, click, changeFilter } = props;
 
     const eventRow = (event: IEvents_Event) => (
-        <Fade in>
-            <div className={classes.eventRow}>
+        <Fade key={event.id} in timeout={400}>
+            <div className={classes.eventRow} onClick={() => click(event)}>
                 <Grid
                     container
                     justify="center"
@@ -75,5 +95,20 @@ export const EventList = (props: { events: IEvents_Event[] }): ReactElement => {
         </Fade>
     );
 
-    return <div>{props.events.map((e) => eventRow(e))}</div>;
+    return (
+        <div className={classes.root}>
+            <div className={classes.header}>
+                <PageTitle>Events</PageTitle>
+                <PageNavs
+                    onClick={(value: string) => {
+                        changeFilter(value as EventFilter);
+                    }}
+                    active={filter}
+                >
+                    {Object.keys(EventFilter)}
+                </PageNavs>
+            </div>
+            <div className={classes.body}>{events.map((e) => eventRow(e))}</div>
+        </div>
+    );
 };
