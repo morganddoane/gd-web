@@ -6,6 +6,7 @@ import { PageTitle } from 'components/AppNav/components/PageTitle/iindex';
 import { MdChevronLeft } from 'react-icons/md';
 import { useHistory } from 'react-router';
 import { AttendeeTable } from './components/AttendeeTable';
+import { AttendeeDrawer } from './components/AttendeeDrawer';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -35,8 +36,16 @@ export const EventDetail = (props: {
     const classes = useStyles();
     const history = useHistory();
 
+    const [focusedAttendee, setFocusedAttendee] = React.useState<
+        IEventDetail_Attendee | undefined
+    >(undefined);
+
     const back = (): void => {
         history.goBack();
+    };
+
+    const rowClick = (attendee: IEventDetail_Attendee): void => {
+        setFocusedAttendee(attendee);
     };
 
     const sorted = attendees.slice().sort(function (a, b) {
@@ -62,7 +71,16 @@ export const EventDetail = (props: {
                 <PageTitle>{event.name.text}</PageTitle>
             </div>
             <div className={classes.body}>
-                <AttendeeTable attendees={sorted} />
+                <AttendeeTable click={rowClick} attendees={sorted} />
+                {focusedAttendee ? (
+                    <AttendeeDrawer
+                        open={true}
+                        attendee={focusedAttendee}
+                        onClose={() => setFocusedAttendee(undefined)}
+                    />
+                ) : (
+                    ''
+                )}
             </div>
         </div>
     );

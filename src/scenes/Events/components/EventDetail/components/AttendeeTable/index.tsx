@@ -23,8 +23,9 @@ const useStyles = makeStyles((theme) => ({
 
 export const AttendeeTable = (props: {
     attendees: IEventDetail_Attendee[];
+    click: (attendee: IEventDetail_Attendee) => void;
 }): ReactElement => {
-    const { attendees } = props;
+    const { attendees, click } = props;
 
     const classes = useStyles();
 
@@ -43,7 +44,10 @@ export const AttendeeTable = (props: {
     };
 
     const getLocation = (address: IAddress | undefined): string => {
-        if (address) return address.city ? address.city : '';
+        if (address)
+            return `${address.city ? address.city : ''}, ${
+                address.region ? address.region : ''
+            }`;
         else return 'Not found';
     };
 
@@ -55,17 +59,13 @@ export const AttendeeTable = (props: {
                     <TableCell>Location</TableCell>
                     <TableCell>Date Purchased</TableCell>
                     <TableCell>Status</TableCell>
-                    {/* <TableCell>Shipping</TableCell>
-                    <TableCell>Notes</TableCell> */}
+                    {/* <TableCell>Shipping</TableCell> */}
+                    <TableCell>Notes</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
                 {attendees.map((att) => (
-                    <TableRow
-                        hover
-                        key={att.id}
-                        onClick={() => console.log(att)}
-                    >
+                    <TableRow hover key={att.id} onClick={() => click(att)}>
                         <TableCell
                             className={classes.cell}
                             component="th"
@@ -98,6 +98,13 @@ export const AttendeeTable = (props: {
                             {`${att.status}${
                                 att.refunded ? ' (Refunded)' : ''
                             }`}
+                        </TableCell>
+                        <TableCell
+                            className={classes.cell}
+                            component="th"
+                            scope="row"
+                        >
+                            {att.note ? att.note : ''}
                         </TableCell>
                     </TableRow>
                 ))}

@@ -14,6 +14,7 @@ import { useQuery } from '@apollo/client';
 import { EventList } from './components/EventList';
 import {
     IEventDetail_Args,
+    IEventDetail_Attendee,
     IEventDetail_Response,
     QEventDetail,
 } from 'GraphQL/scenes/EventDetail/queries';

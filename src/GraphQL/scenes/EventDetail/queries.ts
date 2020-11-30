@@ -91,6 +91,7 @@ export const QEventDetail = gql`
             guestlist_id
             invited_by
             delivery_method
+            note
         }
     }
 `;
@@ -166,4 +167,5 @@ export interface IEventDetail_Attendee {
     guestlist_id: string;
     invited_by: string;
     delivery_method: string;
+    note: string;
 }
